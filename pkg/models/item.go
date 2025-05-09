@@ -11,3 +11,12 @@ type SubItem struct {
 	StringProperty string
 	NumberProperty int
 }
+
+func NewItem() Item {
+	return Item{
+		StringProperty:     "string",
+		NumberProperty:     0,
+		SubItemProperty:    SubItem{},
+		SubItemsProperties: []SubItem{},
+	}
+}
