@@ -1,3 +1,3 @@
-module kafka-mongo/database-worker
+module QueueAndDb/DatabaseWorker
 
 go 1.24

@@ -1,4 +1,4 @@
-module kafka-mongo/queue-worker
+module QueueAndDb/QueueWorker
 
 go 1.24
 

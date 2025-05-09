@@ -1,3 +1,3 @@
-module kafka-mongo/main-api
+module QueueAndDb/MainApi
 
 go 1.24.3

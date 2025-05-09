@@ -1,6 +1,6 @@
 package kafka
 
-import ()
+import "QueueAndDb/pkg"
 
 type IKafka interface {
 	//SendMessageToPartition(topic string, item models.Item) error
