@@ -1,9 +1,9 @@
 package main
 
 import (
-	"QueueAndDb/QueueWorker/commands"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/iwannaexplore/QueueAndDb/QueueWorker/commands"
 	"net/http"
 )
 
