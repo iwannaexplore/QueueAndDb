@@ -12,7 +12,8 @@ cover.out
 
 # ignore ide files (debug config etc...)
 /.vscode
-/.idea
+*/.idea/*
+.idea
 __debug_bin*
 .history
 localtest
