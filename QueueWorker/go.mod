@@ -1,4 +1,4 @@
-module QueueAndDb/QueueWorker
+module github.com/iwannaexplore/QueueAndDb/QueueWorker
 
 go 1.24
 

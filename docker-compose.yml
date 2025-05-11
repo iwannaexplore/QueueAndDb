@@ -3,7 +3,7 @@ version: '3.8'
 services:
   kafka-worker:
     build:
-      context: .
+      context: QueueWorker
       dockerfile: KW-Dockerfile
     ports:
       - "8080:8080"
@@ -13,7 +13,7 @@ services:
 
   mongo-worker:
     build:
-      context: .
+      context: DatabaseWorker
       dockerfile: KW-Dockerfile
     ports:
       - "8081:8081"

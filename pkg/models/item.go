@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type Item struct {
 	StringProperty     string
 	NumberProperty     int
@@ -12,11 +14,22 @@ type SubItem struct {
 	NumberProperty int
 }
 
-func NewItem() Item {
+func NewItem(index int) Item {
+	subItems := make([]SubItem, 5)
+	for i := 0; i < 5; i++ {
+		subItems[i] = newSubItem(index)
+	}
 	return Item{
-		StringProperty:     "string",
-		NumberProperty:     0,
-		SubItemProperty:    SubItem{},
-		SubItemsProperties: []SubItem{},
+		StringProperty:     fmt.Sprintf("%s-string", index),
+		NumberProperty:     index,
+		SubItemProperty:    newSubItem(-1),
+		SubItemsProperties: subItems,
+	}
+}
+
+func newSubItem(index int) SubItem {
+	return SubItem{
+		StringProperty: fmt.Sprintf("%s-substring", index),
+		NumberProperty: index,
 	}
 }
