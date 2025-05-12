@@ -1,10 +1,10 @@
-version: '3.8'
-
 services:
   kafka-worker:
     build:
-      context: QueueWorker
+      context: .
       dockerfile: KW-Dockerfile
+
+    platform: linux/arm64  # Specify the platform here
     ports:
       - "8080:8080"
     depends_on:
@@ -13,10 +13,10 @@ services:
 
   mongo-worker:
     build:
-      context: DatabaseWorker
-      dockerfile: KW-Dockerfile
-    ports:
-      - "8081:8081"
+      context: .
+      dockerfile: DW-Dockerfile
+
+    platform: linux/arm64  # Specify the platform here
     depends_on:
       - mongo
 

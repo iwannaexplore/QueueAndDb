@@ -1,9 +1,11 @@
 package main
 
 import (
+	"QueueAndDb/QueueWorker/commands"
+	"QueueAndDb/pkg/kafka"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/iwannaexplore/QueueAndDb/QueueWorker/commands"
+	"log"
 	"net/http"
 )
 
@@ -15,6 +17,10 @@ type Request struct {
 
 func main() {
 	router := gin.Default()
+	kafkaClient, err := kafka.NewProducerClient()
+	if err != nil {
+		log.Fatalf("Failed to create producer client: %v", err)
+	}
 
 	router.POST("/request", func(c *gin.Context) {
 		var request Request
@@ -23,7 +29,7 @@ func main() {
 			return
 		}
 
-		command, err := fromRequestToCommand(request)
+		command, err := fromRequestToCommand(request, kafkaClient)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
@@ -38,15 +44,15 @@ func main() {
 	router.Run(":8080")
 }
 
-func fromRequestToCommand(request Request) (commands.ICommand, error) {
+func fromRequestToCommand(request Request, kafka kafka.IKafkaProducer) (commands.ICommand, error) {
 	switch request.CommandName {
-	case "GenerateItems":
+	case "generateItems":
 		{
-			return &commands.GenerateItems{AmountOfItems: request.AmountOfItems}, nil
+			return commands.NewGenerateItems(request.AmountOfItems, kafka), nil
 		}
-	case "GenerateItemsWithDelay":
+	case "generateItemsWithDelay":
 		{
-			return &commands.GenerateItemsWithDelay{AmountOfItems: request.AmountOfItems, Delay: request.Delay}, nil
+			return commands.NewGenerateItemsWithDelay(request.AmountOfItems, request.Delay, kafka), nil
 		}
 	default:
 		return nil, errors.New("invalid command")

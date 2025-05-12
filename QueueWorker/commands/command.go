@@ -1,9 +1,9 @@
 package commands
 
 import (
+	"QueueAndDb/pkg/kafka"
+	"QueueAndDb/pkg/models"
 	"fmt"
-	"github.com/iwannaexplore/QueueAndDb/QueueWorker/kafka"
-	"github.com/iwannaexplore/QueueAndDb/pkg/models"
 	"time"
 )
 
@@ -11,19 +11,33 @@ type ICommand interface {
 	Execute() error
 }
 
-type GenerateItems struct {
+type generateItems struct {
 	AmountOfItems int
-	Kafka         kafka.IKafka
+	Kafka         kafka.IKafkaProducer
 }
-type GenerateItemsWithDelay struct {
-	Kafka         kafka.IKafka
+type generateItemsWithDelay struct {
+	Kafka         kafka.IKafkaProducer
 	AmountOfItems int
 	Delay         int
 }
 
-func (g *GenerateItems) Execute() error {
+func NewGenerateItems(amountOfItems int, kafka kafka.IKafkaProducer) ICommand {
+	return &generateItems{
+		AmountOfItems: amountOfItems,
+		Kafka:         kafka,
+	}
+}
+func NewGenerateItemsWithDelay(amountOfItems int, delay int, kafka kafka.IKafkaProducer) ICommand {
+	return &generateItemsWithDelay{
+		AmountOfItems: amountOfItems,
+		Delay:         delay,
+		Kafka:         kafka,
+	}
+}
+
+func (g *generateItems) Execute() error {
 	for index := 0; index < g.AmountOfItems; index++ {
-		err := g.Kafka.SendMessageToPartitionInTopic("", "", models.NewItem(index))
+		err := g.Kafka.SendMessageToPartitionInTopic("", models.NewItem(index))
 		if err != nil {
 			return err
 		}
@@ -32,10 +46,10 @@ func (g *GenerateItems) Execute() error {
 	return nil
 }
 
-func (g GenerateItemsWithDelay) Execute() error {
+func (g generateItemsWithDelay) Execute() error {
 	for index := 0; index < g.AmountOfItems; index++ {
 		time.Sleep(time.Duration(g.Delay) * time.Second)
-		err := g.Kafka.SendMessageToPartitionInTopic("", "", models.NewItem(index))
+		err := g.Kafka.SendMessageToPartitionInTopic("", models.NewItem(index))
 		if err != nil {
 			return err
 		}
