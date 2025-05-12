@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o QueueWorker/main ./QueueWorker
-FROM alpine:latest
+FROM ubuntu:latest
 WORKDIR /root/
 COPY --from=builder /app/QueueWorker/main .
 EXPOSE 8080

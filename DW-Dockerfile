@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o DatabaseWorker/main ./DatabaseWorker
-FROM alpine:latest
+FROM ubuntu:latest
 WORKDIR /root/
 COPY --from=builder /app/DatabaseWorker/main .
 EXPOSE 8080
