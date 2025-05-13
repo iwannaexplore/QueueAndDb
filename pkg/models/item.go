@@ -20,7 +20,7 @@ func NewItem(index int) Item {
 		subItems[i] = newSubItem(index)
 	}
 	return Item{
-		StringProperty:     fmt.Sprintf("%s-string", index),
+		StringProperty:     fmt.Sprintf("%d-string", index),
 		NumberProperty:     index,
 		SubItemProperty:    newSubItem(-1),
 		SubItemsProperties: subItems,
@@ -29,7 +29,7 @@ func NewItem(index int) Item {
 
 func newSubItem(index int) SubItem {
 	return SubItem{
-		StringProperty: fmt.Sprintf("%s-substring", index),
+		StringProperty: fmt.Sprintf("%d-substring", index),
 		NumberProperty: index,
 	}
 }

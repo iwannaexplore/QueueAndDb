@@ -12,6 +12,7 @@ import (
 type Request struct {
 	CommandName   string `json:"commandName"`
 	AmountOfItems int    `json:"amountOfItems"`
+	Topic         string `json:"topic"`
 	Delay         int    `json:"delay"`
 }
 
@@ -38,7 +39,7 @@ func main() {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
-		c.JSON(http.StatusOK, request)
+		c.JSON(http.StatusOK, gin.H{"message": "Command executed successfully"})
 	})
 
 	router.Run(":8080")
@@ -48,11 +49,11 @@ func fromRequestToCommand(request Request, kafka kafka.IKafkaProducer) (commands
 	switch request.CommandName {
 	case "generateItems":
 		{
-			return commands.NewGenerateItems(request.AmountOfItems, kafka), nil
+			return commands.NewGenerateItems(request.AmountOfItems, request.Topic, kafka), nil
 		}
 	case "generateItemsWithDelay":
 		{
-			return commands.NewGenerateItemsWithDelay(request.AmountOfItems, request.Delay, kafka), nil
+			return commands.NewGenerateItemsWithDelay(request.AmountOfItems, request.Delay, request.Topic, kafka), nil
 		}
 	default:
 		return nil, errors.New("invalid command")

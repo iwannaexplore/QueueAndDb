@@ -9,20 +9,11 @@ import (
 )
 
 func main() {
-	//Read from kafka
-	kafkaConsumer, err := kafka.NewConsumerClient()
-	if err != nil {
-		log.Fatalf("Failed to create consumer client: %v", err)
-	}
-
 	mongoDbClient := mongodb.NewMongoItemRepository()
 
-	if err != nil {
-		log.Fatalf("Failed to create consumer client: %v", err)
-	}
-	MoveFromTopicToBd(string(kafka.FirstTopic), kafkaConsumer, mongoDbClient)
-	MoveFromTopicToBd(string(kafka.SecondTopic), kafkaConsumer, mongoDbClient)
-	MoveFromTopicToBd(string(kafka.ThirdTopic), kafkaConsumer, mongoDbClient)
+	MoveFromTopicToBd(string(kafka.FirstTopic), mongoDbClient)
+	MoveFromTopicToBd(string(kafka.SecondTopic), mongoDbClient)
+	MoveFromTopicToBd(string(kafka.ThirdTopic), mongoDbClient)
 
 	for {
 		fmt.Println("Running...")
@@ -30,18 +21,25 @@ func main() {
 	}
 }
 
-func MoveFromTopicToBd(topic string, kafkaClient kafka.IKafkaConsumer, repo mongodb.ItemRepository) {
+func MoveFromTopicToBd(topic string, repo mongodb.ItemRepository) {
+	kafkaConsumer, err := kafka.NewConsumerClient()
+	//Read from kafka
+	if err != nil {
+		log.Fatalf("Failed to create consumer client: %v", err)
+	}
 	go func(topic string, kafkaClient kafka.IKafkaConsumer) {
-		item, err := kafkaClient.ReadMessageFromPartitionInTopic(topic)
-		if err != nil {
-			log.Fatalf("Failed to read message from topic: %v", err)
-		}
+		for {
+			item, err := kafkaClient.ReadMessageFromPartitionInTopic(topic)
+			if err != nil {
+				log.Fatalf("Failed to read message from topic: %v", err)
+			}
 
-		log.Printf("%v\n", item)
-		index, err := repo.Insert(item)
-		if err != nil {
-			log.Fatalf("Failed to write to db: %v", err)
+			log.Printf("%v\n", item)
+			index, err := repo.Insert(item)
+			if err != nil {
+				log.Fatalf("Failed to write to db: %v", err)
+			}
+			log.Printf("Item #%v written to db successfully from topic %s\n", index, topic)
 		}
-		log.Printf("Item #%d written to db successfully\n", index)
-	}(topic, kafkaClient)
+	}(topic, kafkaConsumer)
 }

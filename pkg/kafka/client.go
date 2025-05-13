@@ -10,10 +10,10 @@ import (
 type Topic string
 
 const (
-	broker  = "kafka:9092"
+	broker  = "localhost:9092"
 	groupID = "my_group"
 
-	FirstTopic  Topic = "first"
+	FirstTopic  Topic = "first1"
 	SecondTopic Topic = "second"
 	ThirdTopic  Topic = "third"
 )

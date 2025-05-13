@@ -11,9 +11,9 @@ import (
 
 // MongoDB configuration
 const (
-	uri            = "mongodb://mongo:27017" // Default MongoDB URI
-	databaseName   = "mydatabase"            // Replace with your database name
-	collectionName = "mycollection"          // Replace with your collection name
+	uri            = "mongodb://localhost:27017" // Default MongoDB URI
+	databaseName   = "mydatabase"                // Replace with your database name
+	collectionName = "mycollection"              // Replace with your collection name
 )
 
 // ItemRepository interface for person data operations
